@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile CafeMS",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "-cp", "lib/sqlite-jdbc.jar",
+                "-d", "out",
+                "-sourcepath", "src",
+                "src/cafe/models/User.java",
+                "src/cafe/models/MenuItem.java",
+                "src/cafe/models/Order.java",
+                "src/cafe/utils/DatabaseManager.java",
+                "src/cafe/utils/UIConstants.java",
+                "src/cafe/dao/UserDAO.java",
+                "src/cafe/dao/MenuDAO.java",
+                "src/cafe/dao/OrderDAO.java",
+                "src/cafe/ui/DashboardPanel.java",
+                "src/cafe/ui/MenuPanel.java",
+                "src/cafe/ui/OrderPanel.java",
+                "src/cafe/ui/OrdersListPanel.java",
+                "src/cafe/ui/UserManagementPanel.java",
+                "src/cafe/ui/MainFrame.java",
+                "src/cafe/ui/LoginFrame.java"
+            ],
+            "group": "build",
+            "problemMatcher": "$javac",
+            "presentation": { "reveal": "always" }
+        },
+        {
+            "label": "Run CafeMS",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-cp",
+                "${workspaceFolder}/out${pathSeparator}${workspaceFolder}/lib/sqlite-jdbc.jar",
+                "cafe.ui.LoginFrame"
+            ],
+            "dependsOn": "Compile CafeMS",
+            "group": { "kind": "build", "isDefault": true },
+            "presentation": { "reveal": "always" }
+        }
+    ]
+}
