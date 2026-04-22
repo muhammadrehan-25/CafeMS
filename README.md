@@ -13,7 +13,7 @@
 **A Full-Featured Cafe Management Desktop Application**
 *Built with Java Swing & SQLite for streamlined cafe operations*
 
-[📥 Download Installer](#-installation) &nbsp;•&nbsp; [🚀 Run from Source](#-run-from-source-code) &nbsp;•&nbsp; [✨ Features](#-features) &nbsp;•&nbsp; [📄 Report](CafeMS_Project_Report.docx)
+[📥 Download Installer](#-installation) &nbsp;•&nbsp; [🚀 Run from Source](#-run-from-source-code) &nbsp;•&nbsp; [✨ Features](#-features) &nbsp;
 
 ---
 
