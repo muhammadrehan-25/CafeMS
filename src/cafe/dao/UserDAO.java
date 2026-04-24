@@ -91,16 +91,31 @@ public class UserDAO {
         }
     }
 
-    /**
-     * Deletes a user by ID.
-     */
     public boolean deleteUser(int userId) {
-        String sql = "DELETE FROM users WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, userId);
-            return ps.executeUpdate() > 0;
+        try {
+            conn.setAutoCommit(false);
+            
+            // Re-assign orders handled by this user to the Admin (ID 1)
+            // This prevents foreign key constraint violations while keeping the order history intact.
+            try (PreparedStatement ps1 = conn.prepareStatement("UPDATE orders SET user_id=1 WHERE user_id=?")) {
+                ps1.setInt(1, userId);
+                ps1.executeUpdate();
+            }
+            
+            // Now safely delete the user
+            boolean success = false;
+            try (PreparedStatement ps2 = conn.prepareStatement("DELETE FROM users WHERE id=?")) {
+                ps2.setInt(1, userId);
+                success = ps2.executeUpdate() > 0;
+            }
+            
+            conn.commit();
+            conn.setAutoCommit(true);
+            return success;
+            
         } catch (SQLException e) {
             e.printStackTrace();
+            try { conn.rollback(); conn.setAutoCommit(true); } catch (SQLException ex) { ex.printStackTrace(); }
             return false;
         }
     }

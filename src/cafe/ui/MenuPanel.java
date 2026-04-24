@@ -280,9 +280,11 @@ public class MenuPanel extends JPanel {
         int confirm = JOptionPane.showConfirmDialog(this, "Delete this item?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             if (menuDAO.deleteItem(editingId)) {
-                JOptionPane.showMessageDialog(this, "Item deleted.");
-            if (onMenuChanged != null) onMenuChanged.run();
+                JOptionPane.showMessageDialog(this, "Item deleted successfully.");
+                if (onMenuChanged != null) onMenuChanged.run();
                 clearForm(); loadData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete item. Please try again.", "Delete Failed", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

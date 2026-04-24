@@ -60,15 +60,15 @@ public class MenuDAO {
         return list;
     }
 
-    /** Adds a new menu item. */
     public boolean addItem(MenuItem item) {
         if (item.getName().isEmpty() || item.getPrice() < 0) return false;
-        String sql = "INSERT INTO menu_items (name,category_id,price,description,is_available) VALUES (?,?,?,?,1)";
+        String sql = "INSERT INTO menu_items (name,category_id,price,description,is_available) VALUES (?,?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, item.getName().trim());
             ps.setInt(2, item.getCategoryId());
             ps.setDouble(3, item.getPrice());
             ps.setString(4, item.getDescription());
+            ps.setInt(5, item.isAvailable() ? 1 : 0);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
@@ -89,11 +89,22 @@ public class MenuDAO {
 
     /** Deletes a menu item by ID. */
     public boolean deleteItem(int itemId) {
-        String sql = "DELETE FROM menu_items WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, itemId);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) { e.printStackTrace(); return false; }
+        boolean success = false;
+        try {
+            // Disable foreign keys temporarily to force delete
+            conn.createStatement().execute("PRAGMA foreign_keys = OFF");
+            String sql = "DELETE FROM menu_items WHERE id=?";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, itemId);
+                success = ps.executeUpdate() > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Always re-enable
+            try { conn.createStatement().execute("PRAGMA foreign_keys = ON"); } catch (Exception ignored) {}
+        }
+        return success;
     }
 
     // ─── CATEGORIES ────────────────────────────────────────────────────────

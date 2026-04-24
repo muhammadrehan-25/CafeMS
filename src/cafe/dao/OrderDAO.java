@@ -143,8 +143,8 @@ public class OrderDAO {
     /** Returns order line-items for a specific order ID. */
     public List<Object[]> getOrderItems(int orderId) {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT m.name, oi.quantity, oi.unit_price, (oi.quantity*oi.unit_price) AS subtotal " +
-                     "FROM order_items oi JOIN menu_items m ON oi.menu_item_id=m.id WHERE oi.order_id=?";
+        String sql = "SELECT COALESCE(m.name, 'Deleted Item') AS name, oi.quantity, oi.unit_price, (oi.quantity*oi.unit_price) AS subtotal " +
+                     "FROM order_items oi LEFT JOIN menu_items m ON oi.menu_item_id=m.id WHERE oi.order_id=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, orderId);
             ResultSet rs = ps.executeQuery();
@@ -196,12 +196,13 @@ public class OrderDAO {
         // Subquery builds a comma-separated item name list per order
         String sql =
             "SELECT o.id, " +
-            "  (SELECT GROUP_CONCAT(m.name, ', ') " +
-            "   FROM order_items oi JOIN menu_items m ON oi.menu_item_id=m.id " +
+            "  (SELECT GROUP_CONCAT(COALESCE(m.name, 'Deleted Item'), ', ') " +
+            "   FROM order_items oi LEFT JOIN menu_items m ON oi.menu_item_id=m.id " +
             "   WHERE oi.order_id=o.id) AS items_summary, " +
             "  o.total_amount, o.status, " +
             "  STRFTIME('%I:%M %p  %d/%m/%Y', o.created_at, 'localtime') AS time_str " +
             "FROM orders o " +
+            "WHERE DATE(o.created_at, 'localtime') = DATE('now', 'localtime') " +
             "ORDER BY o.id DESC LIMIT ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit);

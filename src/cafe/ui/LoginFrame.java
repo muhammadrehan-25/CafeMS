@@ -136,14 +136,12 @@ public class LoginFrame extends JFrame {
         // Username Field
         JLabel lUser = fieldLabel("Username");
         txtUsername = new JTextField();
-        txtUsername.setText("admin");
         styleField(txtUsername);
         addFocusBorder(txtUsername);
 
         // Password Field
         JLabel lPass = fieldLabel("Password");
         txtPassword = new JPasswordField();
-        txtPassword.setText("admin123");
         txtPassword.setEchoChar('●');
         styleField(txtPassword);
         addFocusBorder(txtPassword);
@@ -216,10 +214,6 @@ public class LoginFrame extends JFrame {
         getRootPane().setDefaultButton(btnLogin);
 
         // Hint Label
-        JLabel lblHint = new JLabel("Default: admin / admin123  |  waiter1 / waiter123", SwingConstants.CENTER);
-        lblHint.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        lblHint.setForeground(UIConstants.TEXT_GRAY);
-        lblHint.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Assemble Right Panel Card
         card.add(lblLoginTitle);
@@ -238,7 +232,6 @@ public class LoginFrame extends JFrame {
         card.add(Box.createVerticalStrut(25));
         card.add(btnLogin);
         card.add(Box.createVerticalStrut(30));
-        card.add(lblHint);
 
         rightPanel.add(Box.createVerticalGlue());
         rightPanel.add(card);

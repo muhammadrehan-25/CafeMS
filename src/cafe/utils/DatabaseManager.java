@@ -108,21 +108,25 @@ public class DatabaseManager {
             stmt.execute("INSERT OR IGNORE INTO categories (name) VALUES ('" + c + "')");
         }
 
-        String[][] items = {
-            {"Chai (Tea)",     "1", "50",  "Traditional desi chai"},
-            {"Cappuccino",     "1", "250", "Italian espresso with milk foam"},
-            {"Latte",          "1", "280", "Espresso with steamed milk"},
-            {"Cold Coffee",    "2", "300", "Blended iced coffee"},
-            {"Lemonade",       "2", "150", "Fresh lemon juice"},
-            {"Samosa (2pcs)",  "3", "80",  "Crispy fried pastry"},
-            {"Club Sandwich",  "3", "350", "Triple-decker sandwich"},
-            {"Chicken Burger", "4", "450", "Grilled chicken burger"},
-            {"Pasta",          "4", "400", "Creamy white sauce pasta"},
-            {"Chocolate Cake", "5", "200", "Rich chocolate slice"}
-        };
-        for (String[] item : items) {
-            stmt.execute("INSERT OR IGNORE INTO menu_items (name,category_id,price,description) VALUES " +
-                    "('" + item[0] + "'," + item[1] + "," + item[2] + ",'" + item[3] + "')");
+        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM menu_items");
+        int count = rs.getInt(1);
+        if (count == 0) {
+            String[][] items = {
+                {"Chai (Tea)",     "1", "50",  "Traditional desi chai"},
+                {"Cappuccino",     "1", "250", "Italian espresso with milk foam"},
+                {"Latte",          "1", "280", "Espresso with steamed milk"},
+                {"Cold Coffee",    "2", "300", "Blended iced coffee"},
+                {"Lemonade",       "2", "150", "Fresh lemon juice"},
+                {"Samosa (2pcs)",  "3", "80",  "Crispy fried pastry"},
+                {"Club Sandwich",  "3", "350", "Triple-decker sandwich"},
+                {"Chicken Burger", "4", "450", "Grilled chicken burger"},
+                {"Pasta",          "4", "400", "Creamy white sauce pasta"},
+                {"Chocolate Cake", "5", "200", "Rich chocolate slice"}
+            };
+            for (String[] item : items) {
+                stmt.execute("INSERT INTO menu_items (name,category_id,price,description) VALUES " +
+                        "('" + item[0] + "'," + item[1] + "," + item[2] + ",'" + item[3] + "')");
+            }
         }
 
         stmt.close();

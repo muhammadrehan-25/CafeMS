@@ -220,8 +220,10 @@ public class UserManagementPanel extends JPanel {
         int confirm = JOptionPane.showConfirmDialog(this, "Delete this user?", "Confirm", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             if (userDAO.deleteUser(editingId)) {
-                JOptionPane.showMessageDialog(this, "User deleted.");
+                JOptionPane.showMessageDialog(this, "User deleted successfully.");
                 clearForm(); loadData();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete user. Please try again.", "Delete Failed", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
