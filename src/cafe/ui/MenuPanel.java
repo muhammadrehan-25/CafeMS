@@ -17,6 +17,9 @@ import java.util.List;
  */
 public class MenuPanel extends JPanel {
 
+    private Runnable onMenuChanged; // fired when menu items are added/updated/deleted
+    public void setOnMenuChanged(Runnable r) { this.onMenuChanged = r; }
+
     private User currentUser;
     private MenuDAO menuDAO;
     private DefaultTableModel tableModel;
@@ -278,6 +281,7 @@ public class MenuPanel extends JPanel {
         if (confirm == JOptionPane.YES_OPTION) {
             if (menuDAO.deleteItem(editingId)) {
                 JOptionPane.showMessageDialog(this, "Item deleted.");
+            if (onMenuChanged != null) onMenuChanged.run();
                 clearForm(); loadData();
             }
         }

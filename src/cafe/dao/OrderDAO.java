@@ -25,7 +25,8 @@ public class OrderDAO {
         String itemSql  = "INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price) VALUES (?,?,?,?)";
 
         try {
-            conn.setAutoCommit(false);
+            // Use explicit SQL transactions (safer with shared SQLite connection)
+            conn.createStatement().execute("BEGIN");
 
             double total = 0;
             for (Object[] item : items) {
@@ -42,6 +43,11 @@ public class OrderDAO {
             int orderId = -1;
             if (keys.next()) orderId = keys.getInt(1);
 
+            if (orderId == -1) {
+                conn.createStatement().execute("ROLLBACK");
+                return -1;
+            }
+
             PreparedStatement ps2 = conn.prepareStatement(itemSql);
             for (Object[] item : items) {
                 ps2.setInt(1, orderId);
@@ -52,13 +58,12 @@ public class OrderDAO {
             }
             ps2.executeBatch();
 
-            conn.commit();
-            conn.setAutoCommit(true);
+            conn.createStatement().execute("COMMIT");
             return orderId;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try { conn.rollback(); conn.setAutoCommit(true); } catch (SQLException ex) { ex.printStackTrace(); }
+            try { conn.createStatement().execute("ROLLBACK"); } catch (SQLException ex) { ex.printStackTrace(); }
             return -1;
         }
     }

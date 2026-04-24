@@ -277,6 +277,10 @@ public class OrderPanel extends JPanel {
 
     // ── Data Loading ─────────────────────────────────────────────────────────
 
+    public void refresh() {
+        loadCategories();
+    }
+
     private void loadCategories() {
         cbCategory.removeAllItems();
         cbCategory.addItem("All Items");
@@ -365,7 +369,19 @@ public class OrderPanel extends JPanel {
         double total = 0;
         for (int r = 0; r < rows; r++) {
             String name = (String) cartModel.getValueAt(r, 0);
-            int    qty  = (int)    cartModel.getValueAt(r, 1);
+            
+            int qty;
+            Object qObj = cartModel.getValueAt(r, 1);
+            if (qObj instanceof Integer) {
+                qty = (Integer) qObj;
+            } else {
+                try {
+                    qty = Integer.parseInt(qObj.toString());
+                } catch(NumberFormatException ex) {
+                    qty = 1;
+                }
+            }
+            
             double sub  = Double.parseDouble(cartModel.getValueAt(r, 3).toString());
             snapshot.add(new String[]{name, String.valueOf(qty), String.format("%.0f", sub)});
             total += sub;
@@ -380,6 +396,12 @@ public class OrderPanel extends JPanel {
             double price     = Double.parseDouble(cartModel.getValueAt(r, 2).toString());
             int menuItemId   = -1;
             for (MenuItem m : allItems) { if (m.getName().equals(itemName)) { menuItemId = m.getId(); break; } }
+            
+            if (menuItemId == -1) {
+                JOptionPane.showMessageDialog(this, "Item '" + itemName + "' is no longer available in the menu. Please clear it from your cart.", "Menu Updated", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             items[r] = new Object[]{menuItemId, qty, price};
         }
 

@@ -70,19 +70,18 @@ public class OrdersListPanel extends JPanel {
         btnViewDetail.addActionListener(e -> viewOrderDetails());
         filterBar.add(btnViewDetail);
 
-        // Mark Cancelled (admin only)
-        if (currentUser.isAdmin()) {
-            JButton btnCancel = makeBtn("Mark Cancelled", UIConstants.BTN_DANGER_TOP, UIConstants.BTN_DANGER_BOT);
-            btnCancel.addActionListener(e -> updateStatus("Cancelled"));
-            filterBar.add(Box.createHorizontalStrut(10));
-            filterBar.add(btnCancel);
+        // Cancel + Delete visible to ALL users (Admin and User)
+        filterBar.add(Box.createHorizontalStrut(10));
 
-            JButton btnDelete = makeBtn("Delete Order", new Color(0x8B0000), new Color(0x5C0000));
-            btnDelete.addActionListener(e -> deleteOrder());
-            filterBar.add(btnDelete);
-        }
+        JButton btnCancel = makeBtn("Mark Cancelled", UIConstants.BTN_DANGER_TOP, UIConstants.BTN_DANGER_BOT);
+        btnCancel.addActionListener(e -> updateStatus("Cancelled"));
+        filterBar.add(btnCancel);
 
-        // Export CSV
+        JButton btnDelete = makeBtn("Delete Order", new Color(0x8B0000), new Color(0x5C0000));
+        btnDelete.addActionListener(e -> deleteOrder());
+        filterBar.add(btnDelete);
+
+        // Export CSV available to all
         JButton btnExport = makeBtn("Export CSV", UIConstants.BTN_SUCCESS_TOP, UIConstants.BTN_SUCCESS_BOT);
         btnExport.addActionListener(e -> exportCSV());
         filterBar.add(Box.createHorizontalStrut(10));

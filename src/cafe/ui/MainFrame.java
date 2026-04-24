@@ -61,11 +61,17 @@ public class MainFrame extends JFrame {
         orderPanel      = new OrderPanel(currentUser);
         ordersListPanel = new OrdersListPanel(currentUser);
 
-        // Wire dashboard refresh callback — fires when order is cancelled
+        // Wire dashboard refresh callback — fires when order is cancelled/completed/deleted
         ordersListPanel.setOnStatusChange(() -> dashboardPanel.refresh());
 
         // Wire dashboard refresh callback — fires when a new order is placed
-        orderPanel.setOnOrderPlaced(() -> dashboardPanel.refresh());
+        orderPanel.setOnOrderPlaced(() -> {
+            dashboardPanel.refresh();
+            ordersListPanel.loadData();
+        });
+
+        // Wire menu→order connection: when menu items change, refresh New Order list
+        menuPanel.setOnMenuChanged(() -> orderPanel.refresh());
 
         contentPanel.add(dashboardPanel,  "Dashboard");
         contentPanel.add(menuPanel,       "Menu");
@@ -284,6 +290,7 @@ public class MainFrame extends JFrame {
             refreshNavStates();
             if ("Dashboard".equals(card)) dashboardPanel.refresh();
             else if ("Menu".equals(card)) menuPanel.loadData();
+            else if ("NewOrder".equals(card)) orderPanel.refresh();
             else if ("Orders".equals(card)) ordersListPanel.loadData();
             else if ("Users".equals(card) && userPanel != null) userPanel.loadData();
         });
